@@ -101,7 +101,7 @@ export const products = [
     text: "Fashion never stops. There is always the new project, the new opportunity. The important thing is to take your time and not get stressed. I just want to do what I do.",
     type: "T-Shirts",
     size: ["M", "L", "XL"],
-    color: ["blacks", "orange", "blue"],
+    color: ["black", "orange", "blue"],
     gender: "male",
     price: 25,
   },
