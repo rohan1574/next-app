@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToBasket } from "../redux/slices/basketSlice";
@@ -22,10 +21,29 @@ const HomePage = () => {
     dispatch(addToBasket(product));
   };
 
-  const genderButtons = ["male", "female"];
-  const colorButtons = ["red", "green", "purple", "yellow", "orange", "blue", "black", "brown"];
+
+  const genderOptions = ["male", "female"];
+  const colorButtons = [
+    "red",
+    "green",
+    "purple",
+    "yellow",
+    "orange",
+    "blue",
+    "black",
+    "brown",
+  ];
   const sizeButtons = ["S", "M", "L", "XL"];
-  const typeButtons = ["Hoodies", "Dresses", "Suits", "Shoes", "T-Shirts", "Jeans", "Jackets", "Bags"];
+  const typeButtons = [
+    "Hoodies",
+    "Dresses",
+    "Suits",
+    "Shoes",
+    "T-Shirts",
+    "Jeans",
+    "Jackets",
+    "Bags",
+  ];
 
   const handleClearFilters = () => {
     setSelectedType(null);
@@ -37,13 +55,14 @@ const HomePage = () => {
   };
 
   // Filter products based on selected filters
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = products.filter((product) => {
     return (
       (selectedType ? product.type === selectedType : true) &&
       (selectedGender ? product.gender === selectedGender : true) &&
       (selectedColor ? product.color?.includes(selectedColor) : true) &&
       (selectedSize ? product.size?.includes(selectedSize) : true) &&
-      (product.price >= minPrice && product.price <= maxPrice)
+      product.price >= minPrice &&
+      product.price <= maxPrice
     );
   });
 
@@ -51,51 +70,72 @@ const HomePage = () => {
     <div className="px-20 py-16">
       <h2 className="text-4xl font-bold p-4">Redux Toolkit</h2>
 
-      {/* Gender Filter */}
-      <div className="flex items-center justify-between py-8">
-        <div className="flex items-center">
-          {genderButtons.map((item, index) => (
-            <div key={index} className="mr-4">
-              <button
-                className={`btn ${selectedGender === item ? "btn-secondary" : "btn-outline btn-secondary"}`}
-                onClick={() => setSelectedGender(item)}
-              >
-                {item}
-              </button>
-            </div>
-          ))}
+      <div className="grid grid-cols-3">
+        {/* Gender Filter */}
+        <div className="py-8">
+          <label className="mr-4" htmlFor="gender-select">
+            Gender:
+          </label>
+          <select
+            id="gender-select"
+            className="select select-accent w-full max-w-xs"
+            value={selectedGender || ""}
+            onChange={(e) => setSelectedGender(e.target.value || null)}
+          >
+            <option value="" disabled>
+              Select Gender
+            </option>
+            {genderOptions.map((gender, index) => (
+              <option key={index} value={gender}>
+                {gender}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
 
-      {/* Size Filter */}
-      <div className="flex items-center justify-between py-8">
-        <div className="flex items-center">
-          {sizeButtons.map((item, index) => (
-            <div key={index} className="mr-4">
-              <button
-                className={`btn ${selectedSize === item ? "btn-secondary" : "btn-outline btn-secondary"}`}
-                onClick={() => setSelectedSize(item)}
-              >
-                {item}
-              </button>
-            </div>
-          ))}
+        {/* Size Filter */}
+        <div className="py-8">
+          <label className="mr-4 text-lg font-semibold" htmlFor="size-select">
+            Size:
+          </label>
+          <select
+            id="size-select"
+            className="select select-accent w-full max-w-xs"
+            defaultValue=""
+            onChange={(e) => setSelectedSize(e.target.value)}
+          >
+            <option value="" disabled>
+              Select Size
+            </option>
+            {sizeButtons.map((size, index) => (
+              <option key={index} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
 
-      {/* Color Filter */}
-      <div className="flex items-center justify-between py-8">
-        <div className="flex items-center">
-          {colorButtons.map((item, index) => (
-            <div key={index} className="mr-4">
-              <button
-                className={`btn ${selectedColor === item ? "btn-secondary" : "btn-outline btn-secondary"}`}
-                onClick={() => setSelectedColor(item)}
-              >
-                {item}
-              </button>
-            </div>
-          ))}
+        {/* Color Filter */}
+
+        <div className="py-8">
+          <label className="mr-4 text-lg font-semibold" htmlFor="color-select">
+            Color:
+          </label>
+          <select
+            id="color-select"
+            className="select select-accent w-full max-w-xs"
+            defaultValue=""
+            onChange={(e) => setSelectedColor(e.target.value)}
+          >
+            <option value="" disabled>
+              Select Color
+            </option>
+            {colorButtons.map((color, index) => (
+              <option key={index} value={color}>
+                {color}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -104,7 +144,11 @@ const HomePage = () => {
         {typeButtons.map((button, index) => (
           <div key={index} className="mr-4">
             <button
-              className={`btn ${selectedType === button ? "btn-secondary" : "btn-outline btn-secondary"}`}
+              className={`btn ${
+                selectedType === button
+                  ? "btn-secondary"
+                  : "btn-outline btn-secondary"
+              }`}
               onClick={() => setSelectedType(button)}
             >
               {button}
@@ -113,39 +157,40 @@ const HomePage = () => {
         ))}
       </div>
 
-      {/* Price Range Filter */}
-      <div className="flex items-center justify-between py-8">
-        <div className="flex items-center">
-          <label className="mr-4">Min Price: ${minPrice}</label>
-          <input
-            type="range"
-            min={0}
-            max={maxPrice}
-            value={minPrice}
-            onChange={(e) => setMinPrice(Number(e.target.value))}
-            className="range [--range-shdw:yellow] mr-4"
-          />
-          <label className="mr-4">Max Price: ${maxPrice}</label>
-          <input
-            type="range"
-            min={minPrice}
-            max={1000}
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-            className="range [--range-shdw:yellow]"
-          />
+      <div className="flex items-center justify-between">
+        {/* Price Range Filter */}
+        <div className="flex items-center justify-between ">
+          <div className="flex items-center">
+            <label className="mr-4">Min Price: ${minPrice}</label>
+            <input
+              type="range"
+              min={0}
+              max={maxPrice}
+              value={minPrice}
+              onChange={(e) => setMinPrice(Number(e.target.value))}
+              className="range [--range-shdw:yellow] mr-4"
+            />
+            <label className="mr-4">Max Price: ${maxPrice}</label>
+            <input
+              type="range"
+              min={minPrice}
+              max={1000}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="range [--range-shdw:yellow]"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* clear filter */}
-
-      <div className="py-4 flex justify-end">
-        <button
-          className="btn btn-outline btn-warning"
-          onClick={handleClearFilters}
-        >
-          Clear Filter
-        </button>
+        {/* Clear Filters */}
+        <div className=" ">
+          <button
+            className="btn btn-outline btn-warning"
+            onClick={handleClearFilters}
+          >
+            Clear Filter
+          </button>
+        </div>
       </div>
 
       {/* Product Listing */}

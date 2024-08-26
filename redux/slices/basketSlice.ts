@@ -6,6 +6,7 @@ interface BasketItem {
     price: number;
     quantity: number;
     img: string; // This line should be included
+    color?: string;
   }
 
   interface BasketState {

@@ -45,7 +45,7 @@ export default function Cart() {
                   <img src={item.img} alt={item.name} className="w-20 h-20 object-cover rounded-xl" />
                   <div className="flex flex-col">
                     <h2>{item.name}</h2>
-                    <small>Golden</small> {/* Adjust if you have more item details */}
+                    <small>{item.color}</small> {/* Adjust if you have more item details */}
                   </div>
                 </div>
                 <div className="rounded-xl border border-gray-400 flex gap-3 items-center">
