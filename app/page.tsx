@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToBasket } from "../redux/slices/basketSlice";
@@ -76,9 +76,133 @@ const HomePage = () => {
     <div className="px-4 py-8 md:px-20 md:py-16">
       <h2 className="text-4xl font-bold p-4">Redux Toolkit</h2>
       <Search onSearch={setSearchTerm} />
-      
-      {/* Filters and other UI components */}
-      
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {/* Gender Filter */}
+        <div className="py-8">
+          <label className="mr-4" htmlFor="gender-select">
+            Gender:
+          </label>
+          <select
+            id="gender-select"
+            className="select select-accent w-full max-w-xs"
+            value={selectedGender || ""}
+            onChange={(e) => setSelectedGender(e.target.value || null)}
+          >
+            <option value="" disabled>
+              Select Gender
+            </option>
+            {genderOptions.map((gender, index) => (
+              <option key={index} value={gender}>
+                {gender}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Size Filter */}
+        <div className="py-8">
+          <label className="mr-4 text-lg font-semibold" htmlFor="size-select">
+            Size:
+          </label>
+          <select
+            id="size-select"
+            className="select select-accent w-full max-w-xs"
+            defaultValue=""
+            onChange={(e) => setSelectedSize(e.target.value)}
+          >
+            <option value="" disabled>
+              Select Size
+            </option>
+            {sizeButtons.map((size, index) => (
+              <option key={index} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Color Filter */}
+        <div className="py-8">
+          <label className="mr-4 text-lg font-semibold" htmlFor="color-select">
+            Color:
+          </label>
+          <select
+            id="color-select"
+            className="select select-accent w-full max-w-xs"
+            defaultValue=""
+            onChange={(e) => setSelectedColor(e.target.value)}
+          >
+            <option value="" disabled>
+              Select Color
+            </option>
+            {colorButtons.map((color, index) => (
+              <option key={index} value={color}>
+                {color}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Type Filter */}
+      <div className="flex flex-wrap items-center justify-center py-8 gap-4">
+        {typeButtons.map((button, index) => (
+          <div key={index} className="flex-shrink-0">
+            <button
+              className={`btn ${
+                selectedType === button
+                  ? "btn-secondary"
+                  : "btn-outline btn-secondary"
+              }`}
+              onClick={() => setSelectedType(button)}
+            >
+              {button}
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-4 py-4">
+        {/* Price Range Filter */}
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+          <div className="flex items-center gap-4">
+            <label className="text-sm md:text-base">
+              Min Price: ${minPrice}
+            </label>
+            <input
+              type="range"
+              min={0}
+              max={maxPrice}
+              value={minPrice}
+              onChange={(e) => setMinPrice(Number(e.target.value))}
+              className="range [--range-shdw:yellow] w-full md:w-48"
+            />
+            <label className="text-sm md:text-base">
+              Max Price: ${maxPrice}
+            </label>
+            <input
+              type="range"
+              min={minPrice}
+              max={1000}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="range [--range-shdw:yellow] w-full md:w-48"
+            />
+          </div>
+        </div>
+
+        {/* Clear Filters */}
+        <div className="w-full md:w-auto">
+          <button
+            className="btn btn-outline btn-warning w-full md:w-auto"
+            onClick={handleClearFilters}
+          >
+            Clear Filter
+          </button>
+        </div>
+      </div>
+
+      {/* View Mode Toggle */}
       <div className="flex gap-4 mb-8">
         <button
           className={`p-2 rounded ${
