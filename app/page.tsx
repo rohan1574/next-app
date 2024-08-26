@@ -15,33 +15,26 @@ const HomePage = () => {
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(100);
 
   const handleAddToBasket = (product: any) => {
     dispatch(addToBasket(product));
   };
 
   const genderButtons = ["male", "female"];
-  const colorButtons = [
-    "red",
-    "green",
-    "purple",
-    "yellow",
-    "orange",
-    "blue",
-    "black",
-    "brown",
-  ];
+  const colorButtons = ["red", "green", "purple", "yellow", "orange", "blue", "black", "brown"];
   const sizeButtons = ["S", "M", "L", "XL"];
-  const typeButtons = [
-    "Hoodies",
-    "Dresses",
-    "Suits",
-    "Shoes",
-    "T-Shirts",
-    "Jeans",
-    "Jackets",
-    "Bags",
-  ];
+  const typeButtons = ["Hoodies", "Dresses", "Suits", "Shoes", "T-Shirts", "Jeans", "Jackets", "Bags"];
+
+  const handleClearFilters = () => {
+    setSelectedType(null);
+    setSelectedGender(null);
+    setSelectedColor(null);
+    setSelectedSize(null);
+    setMinPrice(0);
+    setMaxPrice(100);
+  };
 
   // Filter products based on selected filters
   const filteredProducts = products.filter(product => {
@@ -49,7 +42,8 @@ const HomePage = () => {
       (selectedType ? product.type === selectedType : true) &&
       (selectedGender ? product.gender === selectedGender : true) &&
       (selectedColor ? product.color?.includes(selectedColor) : true) &&
-      (selectedSize ? product.size?.includes(selectedSize) : true)
+      (selectedSize ? product.size?.includes(selectedSize) : true) &&
+      (product.price >= minPrice && product.price <= maxPrice)
     );
   });
 
@@ -57,6 +51,7 @@ const HomePage = () => {
     <div className="px-20 py-16">
       <h2 className="text-4xl font-bold p-4">Redux Toolkit</h2>
 
+      {/* Gender Filter */}
       <div className="flex items-center justify-between py-8">
         <div className="flex items-center">
           {genderButtons.map((item, index) => (
@@ -72,6 +67,7 @@ const HomePage = () => {
         </div>
       </div>
 
+      {/* Size Filter */}
       <div className="flex items-center justify-between py-8">
         <div className="flex items-center">
           {sizeButtons.map((item, index) => (
@@ -87,6 +83,7 @@ const HomePage = () => {
         </div>
       </div>
 
+      {/* Color Filter */}
       <div className="flex items-center justify-between py-8">
         <div className="flex items-center">
           {colorButtons.map((item, index) => (
@@ -102,6 +99,7 @@ const HomePage = () => {
         </div>
       </div>
 
+      {/* Type Filter */}
       <div className="flex items-center justify-center py-8">
         {typeButtons.map((button, index) => (
           <div key={index} className="mr-4">
@@ -115,6 +113,42 @@ const HomePage = () => {
         ))}
       </div>
 
+      {/* Price Range Filter */}
+      <div className="flex items-center justify-between py-8">
+        <div className="flex items-center">
+          <label className="mr-4">Min Price: ${minPrice}</label>
+          <input
+            type="range"
+            min={0}
+            max={maxPrice}
+            value={minPrice}
+            onChange={(e) => setMinPrice(Number(e.target.value))}
+            className="range [--range-shdw:yellow] mr-4"
+          />
+          <label className="mr-4">Max Price: ${maxPrice}</label>
+          <input
+            type="range"
+            min={minPrice}
+            max={1000}
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(Number(e.target.value))}
+            className="range [--range-shdw:yellow]"
+          />
+        </div>
+      </div>
+
+      {/* clear filter */}
+
+      <div className="py-4 flex justify-end">
+        <button
+          className="btn btn-outline btn-warning"
+          onClick={handleClearFilters}
+        >
+          Clear Filter
+        </button>
+      </div>
+
+      {/* Product Listing */}
       <div className="bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-700 text-slate-800 overflow-hidden">
         <div className="bg-slate-100 dark:bg-gray-800 py-3 px-6 font-semibold border-b border-gray-300 dark:border-gray-600 text-slate-800 dark:text-slate-100 flex justify-between items-center">
           <h2>Products</h2>

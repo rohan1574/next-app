@@ -7,6 +7,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        red: '#ff0000',
+        green: '#00ff00',
+        purple: '#800080',
+        yellow: '#ffff00',
+        orange: '#ffa500',
+        blue: '#0000ff',
+        black: '#000000',
+        brown: '#a52a2a',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
@@ -17,7 +27,6 @@ module.exports = {
   plugins: [
     require("daisyui")
   ],
-  // daisyUI config (optional - here are the default values)
   daisyui: {
     themes: false, // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]
     darkTheme: "light", // name of one of the included themes for dark mode
