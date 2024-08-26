@@ -1,10 +1,12 @@
-"use client";
+"use client"
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToBasket } from "../redux/slices/basketSlice";
 import Link from "next/link";
 import { RootState } from "../redux/store";
 import { products } from "../assets/data/dummyData";
+import { AlignJustify, LayoutGrid } from "lucide-react";
+import Search from "@/components/Search";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -16,11 +18,12 @@ const HomePage = () => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(100);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const handleAddToBasket = (product: any) => {
     dispatch(addToBasket(product));
   };
-
 
   const genderOptions = ["male", "female"];
   const colorButtons = [
@@ -52,11 +55,14 @@ const HomePage = () => {
     setSelectedSize(null);
     setMinPrice(0);
     setMaxPrice(100);
+    setSearchTerm(""); // Clear search term
   };
 
-  // Filter products based on selected filters
+  // Filter products based on selected filters and search term
   const filteredProducts = products.filter((product) => {
+    const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     return (
+      matchesSearchTerm &&
       (selectedType ? product.type === selectedType : true) &&
       (selectedGender ? product.gender === selectedGender : true) &&
       (selectedColor ? product.color?.includes(selectedColor) : true) &&
@@ -67,130 +73,29 @@ const HomePage = () => {
   });
 
   return (
-    <div className="px-20 py-16">
+    <div className="px-4 py-8 md:px-20 md:py-16">
       <h2 className="text-4xl font-bold p-4">Redux Toolkit</h2>
-
-      <div className="grid grid-cols-3">
-        {/* Gender Filter */}
-        <div className="py-8">
-          <label className="mr-4" htmlFor="gender-select">
-            Gender:
-          </label>
-          <select
-            id="gender-select"
-            className="select select-accent w-full max-w-xs"
-            value={selectedGender || ""}
-            onChange={(e) => setSelectedGender(e.target.value || null)}
-          >
-            <option value="" disabled>
-              Select Gender
-            </option>
-            {genderOptions.map((gender, index) => (
-              <option key={index} value={gender}>
-                {gender}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Size Filter */}
-        <div className="py-8">
-          <label className="mr-4 text-lg font-semibold" htmlFor="size-select">
-            Size:
-          </label>
-          <select
-            id="size-select"
-            className="select select-accent w-full max-w-xs"
-            defaultValue=""
-            onChange={(e) => setSelectedSize(e.target.value)}
-          >
-            <option value="" disabled>
-              Select Size
-            </option>
-            {sizeButtons.map((size, index) => (
-              <option key={index} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Color Filter */}
-
-        <div className="py-8">
-          <label className="mr-4 text-lg font-semibold" htmlFor="color-select">
-            Color:
-          </label>
-          <select
-            id="color-select"
-            className="select select-accent w-full max-w-xs"
-            defaultValue=""
-            onChange={(e) => setSelectedColor(e.target.value)}
-          >
-            <option value="" disabled>
-              Select Color
-            </option>
-            {colorButtons.map((color, index) => (
-              <option key={index} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Type Filter */}
-      <div className="flex items-center justify-center py-8">
-        {typeButtons.map((button, index) => (
-          <div key={index} className="mr-4">
-            <button
-              className={`btn ${
-                selectedType === button
-                  ? "btn-secondary"
-                  : "btn-outline btn-secondary"
-              }`}
-              onClick={() => setSelectedType(button)}
-            >
-              {button}
-            </button>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-between">
-        {/* Price Range Filter */}
-        <div className="flex items-center justify-between ">
-          <div className="flex items-center">
-            <label className="mr-4">Min Price: ${minPrice}</label>
-            <input
-              type="range"
-              min={0}
-              max={maxPrice}
-              value={minPrice}
-              onChange={(e) => setMinPrice(Number(e.target.value))}
-              className="range [--range-shdw:yellow] mr-4"
-            />
-            <label className="mr-4">Max Price: ${maxPrice}</label>
-            <input
-              type="range"
-              min={minPrice}
-              max={1000}
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="range [--range-shdw:yellow]"
-            />
-          </div>
-        </div>
-
-        {/* Clear Filters */}
-        <div className=" ">
-          <button
-            className="btn btn-outline btn-warning"
-            onClick={handleClearFilters}
-          >
-            Clear Filter
-          </button>
-        </div>
+      <Search onSearch={setSearchTerm} />
+      
+      {/* Filters and other UI components */}
+      
+      <div className="flex gap-4 mb-8">
+        <button
+          className={`p-2 rounded ${
+            viewMode === "grid" ? "bg-gray-300" : "bg-gray-100"
+          }`}
+          onClick={() => setViewMode("grid")}
+        >
+          <LayoutGrid className="w-6 h-6" />
+        </button>
+        <button
+          className={`p-2 rounded ${
+            viewMode === "list" ? "bg-gray-300" : "bg-gray-100"
+          }`}
+          onClick={() => setViewMode("list")}
+        >
+          <AlignJustify className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Product Listing */}
@@ -204,33 +109,61 @@ const HomePage = () => {
             View Cart ({itemsInBasket.length})
           </Link>
         </div>
-        <div className="bg-white dark:bg-slate-700 p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div
+          className={`${
+            viewMode === "grid"
+              ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+              : "flex flex-col gap-6"
+          } p-4`}
+        >
           {filteredProducts.map((product: any) => (
             <div
               key={product.id}
-              className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-4"
+              className={`bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-4 ${
+                viewMode === "list" ? "flex items-center gap-4" : ""
+              }`}
             >
-              <img
-                src={product.img}
-                alt={product.title}
-                className="w-full h-48 object-cover mb-4"
-              />
-              <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                {product.name}
-              </h3>
-              <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                {product.size}
-              </h3>
-              <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                {product.gender}
-              </h3>
-              <h3 className="text-lg font-semibold mb-2 dark:text-white">
-                {product.color}
-              </h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                ${product.price}
-              </p>
-
+              {viewMode === "list" && (
+                <img
+                  src={product.img}
+                  alt={product.title}
+                  className="w-24 h-24 object-cover mr-4"
+                />
+              )}
+              <div
+                className={`flex-1 ${
+                  viewMode === "list" ? "flex flex-col" : ""
+                }`}
+              >
+                <h3 className="text-lg font-semibold mb-2 dark:text-white">
+                  {product.name}
+                </h3>
+                {viewMode === "list" && (
+                  <>
+                    <p className="text-gray-700 dark:text-gray-300 mb-2">
+                      {product.size} | {product.gender} | {product.color}
+                    </p>
+                    <p className="text-gray-700 dark:text-gray-300 mb-2">
+                      ${product.price}
+                    </p>
+                  </>
+                )}
+              </div>
+              {viewMode === "grid" && (
+                <img
+                  src={product.img}
+                  alt={product.title}
+                  className="w-full h-48 object-cover mb-4"
+                />
+              )}
+              <>
+                <p className="text-gray-700 dark:text-gray-300 mb-2">
+                  {product.size} | {product.gender} | {product.color}
+                </p>
+                <p className="text-gray-700 dark:text-gray-300 mb-2">
+                  ${product.price}
+                </p>
+              </>
               <button
                 className="btn btn-outline btn-success"
                 onClick={() => handleAddToBasket(product)}
