@@ -51,4 +51,3 @@ const initialState: BasketState = {
 export const { addToBasket, removeFromBasket, incrementQuantity, decrementQuantity } = basketSlice.actions;
 
 export default basketSlice.reducer;
-
