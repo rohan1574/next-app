@@ -7,6 +7,18 @@ import { RootState } from "../redux/store";
 import { products } from "../assets/data/dummyData";
 import { AlignJustify, LayoutGrid } from "lucide-react";
 import Search from "@/components/Search";
+import Hero from "./Hero";
+
+const colorMap: Record<string, string> = {
+  red: "red",
+  green: "green",
+  purple: "purple",
+  yellow: "yellow",
+  orange: "orange",
+  blue: "blue",
+  black: "black",
+  brown: "brown",
+};
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -60,7 +72,9 @@ const Product = () => {
 
   // Filter products based on selected filters and search term
   const filteredProducts = products.filter((product) => {
-    const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearchTerm = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     return (
       matchesSearchTerm &&
       (selectedType ? product.type === selectedType : true) &&
@@ -75,7 +89,8 @@ const Product = () => {
   return (
     <div className="px-4 py-8 md:px-20 md:py-16">
       <h2 className="text-4xl font-bold p-4">Redux Toolkit</h2>
-      <Search onSearch={setSearchTerm} />
+      <Hero />
+
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {/* Gender Filter */}
         <div className="py-8 text-black">
@@ -202,36 +217,39 @@ const Product = () => {
         </div>
       </div>
 
-      {/* View Mode Toggle */}
-      <div className="flex gap-4 mb-8">
-        <button
-          className={`p-2 rounded ${
-            viewMode === "grid" ? "bg-gray-300" : "bg-gray-100"
-          }`}
-          onClick={() => setViewMode("grid")}
-        >
-          <LayoutGrid className="w-6 h-6" />
-        </button>
-        <button
-          className={`p-2 rounded ${
-            viewMode === "list" ? "bg-gray-300" : "bg-gray-100"
-          }`}
-          onClick={() => setViewMode("list")}
-        >
-          <AlignJustify className="w-6 h-6" />
-        </button>
-      </div>
-
       {/* Product Listing */}
       <div className="bg-white border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-700 text-slate-800 overflow-hidden">
-        <div className="bg-slate-100 dark:bg-gray-800 py-3 px-6 font-semibold border-b border-gray-300 dark:border-gray-600 text-slate-800 dark:text-slate-100 flex justify-between items-center">
-          <h2>Products</h2>
-          <Link
-            className="bg-lime-600 hover:bg-red-500 duration-300 transition-all text-slate-50 rounded-md px-4 py-2"
-            href="/cart"
-          >
-            View Cart ({itemsInBasket.length})
-          </Link>
+        <div className="flex justify-between items-center p-2 px-6">
+          {/* View Mode Toggle */}
+          <div className="flex gap-4">
+            <button
+              className={`p-2 rounded ${
+                viewMode === "grid" ? "bg-gray-300" : "bg-gray-100"
+              }`}
+              onClick={() => setViewMode("grid")}
+            >
+              <LayoutGrid className="w-6 h-6" />
+            </button>
+            <button
+              className={`p-2 rounded ${
+                viewMode === "list" ? "bg-gray-300" : "bg-gray-100"
+              }`}
+              onClick={() => setViewMode("list")}
+            >
+              <AlignJustify className="w-6 h-6" />
+            </button>
+          </div>
+          <div>
+            <Search onSearch={setSearchTerm} />
+          </div>
+          <div>
+            <Link
+              className="bg-lime-600 hover:bg-red-500 duration-300 transition-all text-slate-50 rounded-md px-4 py-2"
+              href="/cart"
+            >
+              View Cart ({itemsInBasket.length})
+            </Link>
+          </div>
         </div>
         <div
           className={`${
@@ -243,9 +261,15 @@ const Product = () => {
           {filteredProducts.map((product: any) => (
             <div
               key={product.id}
-              className={`bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg p-4 ${
+              className={`border border-gray-300 rounded-lg p-4 ${
                 viewMode === "list" ? "flex items-center gap-4" : ""
               }`}
+              style={{
+                backgroundColor:
+                  selectedColor && product.color === selectedColor
+                    ? colorMap[selectedColor]
+                    : "transparent",
+              }}
             >
               {viewMode === "list" && (
                 <img
@@ -265,7 +289,7 @@ const Product = () => {
                 {viewMode === "list" && (
                   <>
                     <p className="text-gray-700 dark:text-gray-300 mb-2">
-                      {product.size} | {product.gender} | {product.color}
+                      {product.size}
                     </p>
                     <p className="text-gray-700 dark:text-gray-300 mb-2">
                       ${product.price}
@@ -282,8 +306,26 @@ const Product = () => {
               )}
               <>
                 <p className="text-gray-700 dark:text-gray-300 mb-2">
-                  {product.size} | {product.gender} | {product.color}
+                  {product.size}
                 </p>
+                <p className="text-gray-700 dark:text-gray-300 mb-2">
+                  {product.gender}
+                </p>
+
+                {/* product color */}
+
+                {/* Product Colors */}
+                <div className="flex gap-2 mb-2">
+                  {product.color.map((color: string, index: number) => (
+                    <div
+                      key={index}
+                      className="rounded-full w-4 h-4"
+                      style={{ backgroundColor: colorMap[color] || "black" }} // Dynamic background color
+                      title={color} // Optional: Tooltip to show color name on hover
+                    ></div>
+                  ))}
+                </div>
+
                 <p className="text-gray-700 dark:text-gray-300 mb-2">
                   ${product.price}
                 </p>
