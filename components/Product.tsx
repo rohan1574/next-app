@@ -122,8 +122,8 @@ const Product = () => {
           <select
             id="size-select"
             className="select select-accent w-full max-w-xs"
-            defaultValue=""
-            onChange={(e) => setSelectedSize(e.target.value)}
+            value={selectedSize || ""} // Bind value to selectedSize state
+            onChange={(e) => setSelectedSize(e.target.value || null)}
           >
             <option value="" disabled>
               Select Size
@@ -144,8 +144,8 @@ const Product = () => {
           <select
             id="color-select"
             className="select select-accent w-full max-w-xs"
-            defaultValue=""
-            onChange={(e) => setSelectedColor(e.target.value)}
+            value={selectedColor || ""} // Bind value to selectedColor state
+            onChange={(e) => setSelectedColor(e.target.value || null)}
           >
             <option value="" disabled>
               Select Color
@@ -289,7 +289,7 @@ const Product = () => {
                 {viewMode === "list" && (
                   <>
                     <p className="text-gray-700 dark:text-gray-300 mb-2">
-                      {product.size}
+                      Size: {product.size}
                     </p>
                     <p className="text-gray-700 dark:text-gray-300 mb-2">
                       ${product.price}
@@ -305,14 +305,12 @@ const Product = () => {
                 />
               )}
               <>
-                <p className="text-gray-700 dark:text-gray-300 mb-2">
-                  {product.size}
+                <p className="text-gray-700 dark:text-gray-300  mb-2">
+                  Size: {product.size}
                 </p>
                 <p className="text-gray-700 dark:text-gray-300 mb-2">
-                  {product.gender}
+                  Gender: {product.gender}
                 </p>
-
-                {/* product color */}
 
                 {/* Product Colors */}
                 <div className="flex gap-2 mb-2">
@@ -320,8 +318,8 @@ const Product = () => {
                     <div
                       key={index}
                       className="rounded-full w-4 h-4"
-                      style={{ backgroundColor: colorMap[color] || "black" }} // Dynamic background color
-                      title={color} // Optional: Tooltip to show color name on hover
+                      style={{ backgroundColor: colorMap[color] || "black" }}
+                      title={color}
                     ></div>
                   ))}
                 </div>

@@ -5,7 +5,6 @@ import ClientProvider from "./cart/ClientProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -21,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header></Header>
-        <ClientProvider>{children}</ClientProvider>
-        <Footer></Footer>
+        <ClientProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </ClientProvider>
       </body>
     </html>
   );
